@@ -347,10 +347,16 @@ select option { background: #111827; }
         <input type="text" id="inp-note" placeholder="ex: covoiturage, réunion...">
       </div>
     </div>
-    <button class="btn-add" onclick="addTrajet()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-      Ajouter le trajet
-    </button>
+    <div style="display:flex; gap:8px; margin-top:4px;">
+      <button class="btn-add" onclick="addTrajet()" style="flex:1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        Ajouter
+      </button>
+      <button class="btn-add" onclick="addAllerRetour()" style="flex:1.4; background:#1d4ed8; font-size:13px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+        Aller + Retour
+      </button>
+    </div>
   </div>
 </div>
 
@@ -390,6 +396,17 @@ function fmtMonth(str) {
   const [y,m] = str.split('-');
   const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   return `${months[parseInt(m)-1]} ${y}`;
+}
+
+function addAllerRetour() {
+  const date = document.getElementById('inp-date').value || today();
+  const note = document.getElementById('inp-note').value.trim();
+  trajets.unshift({ id: Date.now()+1, date, dir: 'Retour', note });
+  trajets.unshift({ id: Date.now(), date, dir: 'Aller', note });
+  save();
+  document.getElementById('inp-note').value = '';
+  if (navigator.vibrate) navigator.vibrate(30);
+  render();
 }
 
 function addTrajet() {
